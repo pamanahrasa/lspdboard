@@ -1,0 +1,307 @@
+/**
+ * style.css
+ * ---------------------------------------------------------------------------
+ * LSPD Leave Management Dashboard - shared stylesheet.
+ *
+ * Palette and type are reused from the LSPD Rookie Handbook reference
+ * project (Inter font, navy/slate/gold) so this dashboard feels like the
+ * same internal system. Colors are expressed as CSS custom properties in
+ * "R G B" channel form so Tailwind's arbitrary-color config
+ * (rgb(var(--x) / <alpha-value>)) can apply opacity modifiers AND so the
+ * whole app can flip to Light Mode by swapping one attribute:
+ *   document.documentElement.setAttribute('data-theme', 'light')
+ * ---------------------------------------------------------------------------
+ */
+
+:root {
+    color-scheme: dark;
+    --lspd-navy: 15 23 42;
+    --lspd-dark: 30 41 59;
+    --lspd-card: 51 65 85;
+    --lspd-border: 51 65 85;
+    --lspd-gold: 234 179 8;
+    --lspd-gold-hover: 202 138 4;
+    --lspd-text: 248 250 252;
+    --lspd-text-secondary: 148 163 184;
+    --lspd-text-muted: 100 116 139;
+
+    --status-upcoming: 245 158 11;
+    --status-active: 16 185 129;
+    --status-returning: 56 189 248;
+    --status-finished: 100 116 139;
+    --status-overdue: 239 68 68;
+
+    --day-width: 34px;
+}
+
+[data-theme="light"] {
+    color-scheme: light;
+    --lspd-navy: 241 245 249;
+    --lspd-dark: 255 255 255;
+    --lspd-card: 226 232 240;
+    --lspd-border: 203 213 225;
+    --lspd-gold: 180 120 6;
+    --lspd-gold-hover: 146 98 5;
+    --lspd-text: 15 23 42;
+    --lspd-text-secondary: 71 85 105;
+    --lspd-text-muted: 100 116 139;
+
+    --status-upcoming: 180 83 9;
+    --status-active: 4 120 87;
+    --status-returning: 2 132 199;
+    --status-finished: 100 116 139;
+    --status-overdue: 185 28 28;
+}
+
+html { scroll-behavior: smooth; }
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: rgb(var(--lspd-navy));
+    color: rgb(var(--lspd-text));
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: rgb(var(--lspd-navy)); }
+::-webkit-scrollbar-thumb { background: rgb(var(--lspd-card)); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgb(var(--lspd-gold)); }
+
+:focus-visible { outline: 2px solid rgb(var(--lspd-gold)); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+}
+
+/* ============================================================================
+   NAVIGATION / PAGE TABS  (sidebar nav items + tab-switch fade, as used
+   in the LSPD Rookie Handbook reference project)
+   ========================================================================= */
+
+.nav-item { border-left: 4px solid transparent; transition: all 0.2s ease-in-out; }
+.nav-item:hover { background-color: rgb(var(--lspd-navy)); border-color: rgb(var(--lspd-gold)); }
+.nav-item.active { background-color: rgb(var(--lspd-navy)); border-color: rgb(var(--lspd-gold)); color: rgb(var(--lspd-gold)); font-weight: 600; }
+
+.page-content { display: none; animation: fadeIn 0.35s ease-out forwards; }
+.page-content.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+.glass-header { background: rgba(var(--lspd-navy) / 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid rgb(var(--lspd-border)); }
+
+/* ============================================================================
+   TOAST
+   ========================================================================= */
+
+#toast {
+    visibility: hidden; min-width: 240px; max-width: 90vw; text-align: center;
+    border-radius: 8px; padding: 14px 20px; position: fixed; z-index: 80;
+    left: 50%; bottom: 28px; font-weight: 700; font-size: 13px;
+    transform: translateX(-50%) translateY(8px); opacity: 0;
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+}
+#toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ============================================================================
+   SHARED SURFACES
+   ========================================================================= */
+
+.lspd-card-panel { background-color: rgb(var(--lspd-dark)); border: 1px solid rgb(var(--lspd-border)); border-radius: 0.75rem; padding: 1.25rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2); }
+
+.kpi-card { background-color: rgb(var(--lspd-dark)); border: 1px solid rgb(var(--lspd-border)); border-radius: 0.75rem; padding: 1.1rem 1.25rem; transition: border-color 0.2s ease, transform 0.2s ease; }
+.kpi-card:hover { border-color: rgb(var(--lspd-gold) / 0.5); transform: translateY(-1px); }
+
+.lspd-label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: rgb(var(--lspd-text-secondary)); margin-bottom: 0.3rem; }
+
+.lspd-input {
+    background-color: rgb(var(--lspd-navy)); border: 1px solid rgb(var(--lspd-border)); color: rgb(var(--lspd-text));
+    border-radius: 0.5rem; padding: 0.55rem 0.8rem; font-size: 0.875rem; transition: border-color 0.15s ease;
+}
+.lspd-input::placeholder { color: rgb(var(--lspd-text-muted)); }
+.lspd-input:focus { outline: none; border-color: rgb(var(--lspd-gold)); }
+select.lspd-input { cursor: pointer; }
+
+.btn-gold {
+    background-color: rgb(var(--lspd-gold)); color: rgb(var(--lspd-navy)); font-weight: 700;
+    padding: 0.55rem 1.1rem; border-radius: 0.5rem; font-size: 0.875rem; transition: background-color 0.15s ease, transform 0.1s ease;
+    box-shadow: 0 4px 10px -2px rgba(var(--lspd-gold) / 0.35);
+}
+.btn-gold:hover { background-color: rgb(var(--lspd-gold-hover)); }
+.btn-gold:active { transform: scale(0.98); }
+
+.zoom-btn {
+    width: 2.1rem; height: 2.1rem; display: inline-flex; align-items: center; justify-content: center;
+    background-color: rgb(var(--lspd-card)); border: 1px solid rgb(var(--lspd-border)); color: rgb(var(--lspd-text));
+    border-radius: 0.5rem; font-size: 0.75rem; transition: color 0.15s ease, border-color 0.15s ease;
+}
+.zoom-btn:hover { color: rgb(var(--lspd-gold)); border-color: rgb(var(--lspd-gold) / 0.5); }
+
+.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 1.5rem; text-align: center; color: rgb(var(--lspd-text-secondary)); font-size: 0.875rem; }
+
+.panel-danger { border-color: rgb(var(--status-overdue) / 0.4) !important; }
+
+.theme-choice-btn {
+    flex: 1; padding: 0.65rem 1rem; border-radius: 0.5rem; font-size: 0.8125rem; font-weight: 700;
+    background-color: rgb(var(--lspd-navy)); border: 1px solid rgb(var(--lspd-border)); color: rgb(var(--lspd-text-secondary));
+    transition: all 0.15s ease;
+}
+.theme-choice-btn:hover { color: rgb(var(--lspd-text)); }
+.theme-choice-active { background-color: rgb(var(--lspd-gold) / 0.15); border-color: rgb(var(--lspd-gold)); color: rgb(var(--lspd-gold)); }
+
+.gateway-card {
+    display: block; text-align: left; background-color: rgb(var(--lspd-dark)); border: 1px solid rgb(var(--lspd-border));
+    border-radius: 0.85rem; padding: 1.5rem; transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.gateway-card:hover { border-color: rgb(var(--lspd-gold) / 0.6); transform: translateY(-2px); }
+.gateway-cta { display: inline-flex; align-items: center; margin-top: 0.9rem; font-size: 12px; font-weight: 700; color: rgb(var(--lspd-gold)); }
+
+/* ============================================================================
+   FILTER BAR
+   ========================================================================= */
+
+.filter-bar { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.filter-select {
+    background-color: rgb(var(--lspd-card)); border: 1px solid rgb(var(--lspd-border)); color: rgb(var(--lspd-text));
+    border-radius: 0.5rem; padding: 0.4rem 0.7rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;
+}
+.filter-select:focus { outline: none; border-color: rgb(var(--lspd-gold)); }
+
+/* ============================================================================
+   TABLE
+   ========================================================================= */
+
+.scroll-x-fade { overflow-x: auto; }
+.lspd-table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+.lspd-table thead th { background-color: rgb(var(--lspd-navy)); color: rgb(var(--lspd-gold)); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; position: sticky; top: 0; z-index: 5; }
+.lspd-table tbody tr { border-bottom: 1px solid rgb(var(--lspd-border)); }
+.lspd-table tbody tr:last-child { border-bottom: none; }
+
+/* ============================================================================
+   AUTOCOMPLETE
+   ========================================================================= */
+
+.autocomplete-list {
+    position: absolute; top: 100%; left: 0; right: 0; margin-top: 4px; z-index: 30;
+    background-color: rgb(var(--lspd-card)); border: 1px solid rgb(var(--lspd-border)); border-radius: 0.5rem;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.4); max-height: 14rem; overflow-y: auto;
+}
+.autocomplete-item { display: flex; align-items: center; width: 100%; text-align: left; padding: 0.5rem 0.8rem; font-size: 0.8125rem; transition: background-color 0.1s ease; }
+.autocomplete-item:hover { background-color: rgb(var(--lspd-navy) / 0.7); }
+
+/* ============================================================================
+   OFFICER DETAIL MODAL LABELS
+   ========================================================================= */
+
+.detail-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: rgb(var(--lspd-text-secondary)); }
+.detail-value { font-size: 0.875rem; color: rgb(var(--lspd-text)); font-weight: 600; margin-top: 1px; }
+
+/* ============================================================================
+   MODAL
+   ========================================================================= */
+
+.modal-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(3px);
+    z-index: 70; display: flex; align-items: center; justify-content: center; padding: 1rem;
+    animation: fadeIn 0.2s ease-out forwards;
+}
+.modal-panel {
+    width: 100%; max-height: 88vh; display: flex; flex-direction: column; background-color: rgb(var(--lspd-dark));
+    border: 1px solid rgb(var(--lspd-border)); border-radius: 0.85rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6);
+    animation: modalPop 0.2s ease-out forwards;
+}
+@keyframes modalPop { from { opacity: 0; transform: scale(0.97) translateY(6px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+.modal-body { padding: 1.25rem 1.5rem 1.5rem; overflow-y: auto; }
+
+/* ============================================================================
+   TIMELINE (GANTT)
+   ========================================================================= */
+
+.timeline-legend { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-bottom: 0.85rem; }
+.legend-chip { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 11px; font-weight: 600; color: rgb(var(--lspd-text-secondary)); }
+
+.timeline-scroll { overflow: auto; max-height: 32rem; border-radius: 0.75rem; }
+.timeline-inner { position: relative; display: inline-flex; flex-direction: column; min-width: 100%; }
+
+.timeline-row { display: flex; border-bottom: 1px solid rgb(var(--lspd-border) / 0.6); }
+.timeline-header-row { position: sticky; top: 0; z-index: 25; border-bottom: 1px solid rgb(var(--lspd-border)); }
+
+.timeline-name-cell {
+    position: sticky; left: 0; z-index: 20; width: 160px; flex-shrink: 0;
+    display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.65rem;
+    background-color: rgb(var(--lspd-dark)); border-right: 1px solid rgb(var(--lspd-border));
+    cursor: pointer;
+}
+.timeline-header-row .timeline-name-cell { cursor: default; }
+.timeline-corner {
+    z-index: 30; align-items: center; justify-content: flex-start; background-color: rgb(var(--lspd-navy));
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: rgb(var(--lspd-text-secondary));
+}
+
+.timeline-track { position: relative; display: flex; flex-shrink: 0; }
+.timeline-day-cell {
+    width: var(--day-width); flex-shrink: 0; text-align: center; padding-top: 3px;
+    border-right: 1px solid rgb(var(--lspd-border) / 0.35); transition: width 0.15s ease;
+}
+.timeline-weekend { background-color: rgb(var(--lspd-navy) / 0.5); }
+.timeline-today-col { background-color: rgb(var(--lspd-gold) / 0.12); }
+.timeline-header-row .timeline-day-cell { padding-bottom: 4px; }
+
+.timeline-row:not(.timeline-header-row):hover { background-color: rgb(var(--lspd-navy) / 0.35); }
+
+.timeline-bar {
+    position: absolute; top: 7px; bottom: 7px;
+    left: calc(var(--day-index) * var(--day-width));
+    width: calc(var(--day-span) * var(--day-width) - 3px);
+    border-radius: 9999px; cursor: pointer; opacity: 0.92;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.timeline-bar:hover { opacity: 1; transform: scaleY(1.12); }
+
+.timeline-today-line {
+    position: absolute; top: 0; bottom: 0; width: 2px; z-index: 15;
+    background-color: rgb(var(--lspd-gold)); box-shadow: 0 0 8px rgb(var(--lspd-gold) / 0.7);
+    pointer-events: none;
+}
+
+/* ============================================================================
+   CALENDAR
+   ========================================================================= */
+
+.cal-cell {
+    position: relative; min-height: 5.5rem; border-radius: 0.5rem; padding: 0.4rem;
+    display: flex; flex-direction: column; align-items: flex-start;
+    border: 1px solid rgb(var(--lspd-border) / 0.5); transition: border-color 0.15s ease;
+    text-align: left; overflow: hidden;
+}
+.cal-cell:hover { border-color: rgb(var(--lspd-gold) / 0.6); }
+.cal-cell-outside { opacity: 0.35; }
+.cal-cell-today { border-color: rgb(var(--lspd-gold)); border-width: 2px; }
+.cal-daynum { font-size: 0.75rem; font-weight: 700; color: rgb(var(--lspd-text)); }
+.cal-daynum-today {
+    background-color: rgb(var(--lspd-gold)); color: rgb(var(--lspd-navy)); border-radius: 9999px;
+    width: 1.3rem; height: 1.3rem; display: inline-flex; align-items: center; justify-content: center;
+}
+.cal-chip { font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+
+/* ============================================================================
+   CHARTS
+   ========================================================================= */
+
+.chart-box { position: relative; height: 260px; }
+
+/* ============================================================================
+   PRINT
+   ========================================================================= */
+
+@media print {
+    @page { margin: 1.2cm; }
+    body { background-color: #fff !important; color: #000 !important; height: auto !important; overflow: visible !important; }
+    aside, header, #toast, #modal-root, .print-hide { display: none !important; }
+    main { background: none !important; padding: 0 !important; height: auto !important; overflow: visible !important; }
+    .page-content { display: none !important; }
+    .page-content.active { display: block !important; animation: none !important; }
+    .lspd-card-panel, .kpi-card { border: 1px solid #ccc !important; box-shadow: none !important; background: #fff !important; }
+    .lspd-table thead th { background: #f1f1f1 !important; color: #000 !important; position: static !important; }
+    * { color: #000 !important; }
+    .timeline-scroll, .chart-box { display: none !important; }
+}
